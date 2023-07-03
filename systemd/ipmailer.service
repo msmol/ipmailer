@@ -1,0 +1,11 @@
+[Unit]
+Description=ipmailer
+
+[Service]
+WorkingDirectory=/opt/ipmailer
+ExecStart=java -jar /opt/ipmailer/ipmailer-standalone.jar
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=default.target
