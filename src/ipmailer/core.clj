@@ -69,11 +69,11 @@
   [old-ip
    actual-ip]
   (do
+    (write-ip-to-fs actual-ip)
     (if (= old-ip "Unknown")
       (debug "Not sending email, app startup")
       (do
-        (send-email old-ip actual-ip)
-        (write-ip-to-fs actual-ip)))))
+        (send-email old-ip actual-ip)))))
 
 (defn get-sleep-time
   []
