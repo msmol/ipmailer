@@ -1,4 +1,4 @@
-(defproject ipmailer "0.2.1"
+(defproject ipmailer "0.2.2"
   :description "Emails an address when IP has changed"
   :url "https://github.com/msmol/ipmailer"
   :license {:name "MIT"

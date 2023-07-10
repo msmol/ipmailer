@@ -3,7 +3,7 @@
             [postal.core :as postal]
             [dotenv :refer [env]]
             [clojure.string :refer [blank?]]
-            [taoensso.timbre :refer [debug info fatal]])
+            [taoensso.timbre :refer [debug info warn fatal]])
   (:gen-class))
 
 (defn get-ip
@@ -63,7 +63,9 @@
 
 (defn write-ip-to-fs
   [ip]
-  (spit "/etc/public-ip" ip))
+  (try
+    (spit "/etc/public-ip" ip)
+    (catch Exception _ (warn "Cannot write to /etc/public-ip; IP will not be saved on app restart."))))
 
 (defn handle-ip-change
   [old-ip
