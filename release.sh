@@ -2,6 +2,8 @@
 
 VERSION=$(head -n1 project.clj | awk '{ print $3 }' | tr -d '"')
 
+TAOENSSO_TIMBRE_MIN_LEVEL_EDN=':info' lein uberjar
+
 mkdir -p target/tarball/{opt/ipmailer,usr/lib/systemd/system}
 
 cp "./target/uberjar/ipmailer-$VERSION-standalone.jar" "./target/tarball/opt/ipmailer/ipmailer-standalone.jar"

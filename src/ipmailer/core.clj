@@ -61,13 +61,19 @@
       (info (str "Sending email, IP has changed from " old-ip " to " actual-ip))
       (postal/send-message smtp-settings email-settings))))
 
+(defn write-ip-to-fs
+  [ip]
+  (spit "/etc/public-ip" ip))
+
 (defn handle-ip-change
   [old-ip
    actual-ip]
   (do
     (if (= old-ip "Unknown")
       (debug "Not sending email, app startup")
-      (send-email old-ip actual-ip))))
+      (do
+        (send-email old-ip actual-ip)
+        (write-ip-to-fs actual-ip)))))
 
 (defn get-sleep-time
   []
@@ -95,10 +101,15 @@
     (if-not (re-matches #"\d+" (config :poll-interval))
       (kill-app "Please provide a valid value for IPMAILER_POLL_INTERVAL: <int>"))))
 
+(defn get-ip-from-fs
+  []
+  (try (slurp "/etc/public-ip")
+       (catch Exception _ nil)))
+
 (defn -main
   []
   (do
     (info "App started")
     (validate-config (get-config))
-    (check-ip "Unknown")))
+    (check-ip (or (get-ip-from-fs) "Unknown"))))
 
