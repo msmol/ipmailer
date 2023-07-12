@@ -1,4 +1,5 @@
 (ns ipmailer.core
+  (:import [org.apache.commons.validator.routines InetAddressValidator])
   (:require [clj-http.client :as client]
             [postal.core :as postal]
             [dotenv :refer [env]]
@@ -9,8 +10,13 @@
 (defn get-ip
   []
   (-> "https://api.ipify.org"
-      (client/get)
+      (client/get {:throw-exceptions false})
       (get :body)))
+
+(defn ipv4?
+  [ip]
+  (-> (InetAddressValidator.)
+      (.isValid ip)))
 
 (defn kill-app
   [reason]
@@ -83,11 +89,16 @@
 
 (defn check-ip
   [old-ip]
-  (let [actual-ip (get-ip)]
+  (let [new-ip (get-ip)
+        actual-ip (if (ipv4? new-ip) new-ip old-ip)]
     (do
+      (if (not (ipv4? new-ip))
+        (warn "Got invalid IP from ipify, not updating"))
       (debug (str "IP was " old-ip " and now is " actual-ip))
       (if (not= actual-ip old-ip)
-        (handle-ip-change old-ip actual-ip))
+        (if (ipv4? actual-ip)
+          (handle-ip-change old-ip actual-ip)
+          (warn "Got invalid IP from ipify, not updating")))
       (Thread/sleep (get-sleep-time))
       (recur actual-ip))))
 

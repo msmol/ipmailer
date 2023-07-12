@@ -1,4 +1,4 @@
-(defproject ipmailer "0.2.2"
+(defproject ipmailer "0.2.3"
   :description "Emails an address when IP has changed"
   :url "https://github.com/msmol/ipmailer"
   :license {:name "MIT"
@@ -7,7 +7,8 @@
                  [com.draines/postal "2.0.5"]
                  [clj-http "3.12.3"]
                  [lynxeyes/dotenv "1.1.0"]
-                 [com.taoensso/timbre "6.2.1"]]
+                 [com.taoensso/timbre "6.2.1"]
+                 [commons-validator "1.5.1"]]
   :main ^:skip-aot ipmailer.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all
